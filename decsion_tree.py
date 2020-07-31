@@ -1,6 +1,7 @@
 from sklearn import tree
 import pandas as pd
 import graphviz
+import pickle
 
 PERCENT = 0.7
 
@@ -32,13 +33,16 @@ cut = round(PERCENT * len_inputs)
 train_inputs, test_inputs = inputs[:cut], inputs[cut:]
 train_labels,test_labels = labels[:cut], labels[cut:]
 
-max_result = 0
+max_result = 82.77
 best_tree = None
-for depth in range(3,15):
-    for min_s in range(5,50,5):
+for depth in range(3,10):
+    for min_s in range(5,100,5):
         for crit in ["gini","entropy"]:
             for percent in range(40,86,5):
                 PERCENT = percent/100
+                cut = round(PERCENT * len_inputs)
+                train_inputs, test_inputs = inputs[:cut], inputs[cut:]
+                train_labels, test_labels = labels[:cut], labels[cut:]
                 clf = tree.DecisionTreeClassifier(max_depth=depth, min_samples_leaf=min_s,criterion=crit)
                 clf = clf.fit(train_inputs, train_labels)
                 #test
@@ -61,5 +65,8 @@ dot_data = tree.export_graphviz(best_tree, out_file=None,
                                                                   "PTGENDER", "CDRSB", "Hippocampus", "WholeBrain",
                                                                   "Entorhinal", "MidTemp", "APOE4"])
 graph = graphviz.Source(dot_data)
-graph.render("decision_tree")
+graph.render()
 r = tree.export_text(best_tree,feature_names=["ADAS11", "MMSE", "RAVLT_immediate", "AGE", "PTGENDER", "CDRSB", "Hippocampus","WholeBrain","Entorhinal", "MidTemp", "APOE4"])
+with open('best_tree.pickle', 'wb') as f:
+    # Pickle the 'data' dictionary using the highest protocol available.
+    pickle.dump(best_tree, f, pickle.HIGHEST_PROTOCOL)
