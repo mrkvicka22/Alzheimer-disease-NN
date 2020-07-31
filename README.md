@@ -1,5 +1,5 @@
 # Alzheimer-disease-NN
-Practicing my neural network skills with the TADPOLE dataset
+Practicing my machine learning skills with the TADPOLE dataset
 
 Current score for identifying Dementia, MCI to Dementia, MCI, NL to MCI, NL:
 
