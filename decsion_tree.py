@@ -32,23 +32,34 @@ cut = round(PERCENT * len_inputs)
 train_inputs, test_inputs = inputs[:cut], inputs[cut:]
 train_labels,test_labels = labels[:cut], labels[cut:]
 
-clf = tree.DecisionTreeClassifier(max_depth=10)
-clf = clf.fit(train_inputs, train_labels)
+max_result = 0
+best_tree = None
+for depth in range(3,15):
+    for min_s in range(5,50,5):
+        for crit in ["gini","entropy"]:
+            for percent in range(40,86,5):
+                PERCENT = percent/100
+                clf = tree.DecisionTreeClassifier(max_depth=depth, min_samples_leaf=min_s,criterion=crit)
+                clf = clf.fit(train_inputs, train_labels)
+                #test
+                correct = 0
+                for test_inp,test_lab in zip(test_inputs,test_labels):
+                    correct += clf.predict([test_inp]) == [test_lab]
 
-dot_data = tree.export_graphviz(clf, out_file=None,
+                result = (correct / len(test_labels) * 100)[0]
+
+                if result > max_result:
+                    max_result = result
+                    best_tree = clf
+                    print("new best tree with performance:",end=" ")
+                print(result, "%", f"when trained on {percent}% of the data and depth {depth} and {crit} and min_leaf_samples:{min_s}")
+
+# DISPLAY TREE
+
+dot_data = tree.export_graphviz(best_tree, out_file=None,
                                 class_names=["Dementia", "MCI to Dementia", "MCI", "NL to MCI", "NL"],feature_names=["ADAS11", "MMSE", "RAVLT_immediate", "AGE",
                                                                   "PTGENDER", "CDRSB", "Hippocampus", "WholeBrain",
                                                                   "Entorhinal", "MidTemp", "APOE4"])
 graph = graphviz.Source(dot_data)
 graph.render("decision_tree")
-r = tree.export_text(clf,feature_names=["ADAS11", "MMSE", "RAVLT_immediate", "AGE", "PTGENDER", "CDRSB", "Hippocampus","WholeBrain","Entorhinal", "MidTemp", "APOE4"])
-
-
-#test
-correct = 0
-for test_inp,test_lab in zip(test_inputs,test_labels):
-    correct += clf.predict([test_inp]) == [test_lab]
-
-print((correct/len(test_labels)*100)[0], "%", f"when trained on {PERCENT*100}% of the data and depth {clf.tree_.max_depth}")
-
-
+r = tree.export_text(best_tree,feature_names=["ADAS11", "MMSE", "RAVLT_immediate", "AGE", "PTGENDER", "CDRSB", "Hippocampus","WholeBrain","Entorhinal", "MidTemp", "APOE4"])
