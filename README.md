@@ -5,4 +5,4 @@ Current score for identifying Dementia, MCI to Dementia, MCI, NL to MCI, NL:
 
 NN>.....................77%
 Random forests>.........84%
-Single decision tree>...75%
+Single decision tree>...82.77%
