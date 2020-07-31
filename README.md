@@ -1,8 +1,8 @@
 # Alzheimer-disease-NN
 Practicing my machine learning skills with the TADPOLE dataset
 
-Current score for identifying Dementia, MCI to Dementia, MCI, NL to MCI, NL:
-
-NN>.....................77%
-Random forests>.........84%
-Single decision tree>...82.77%
+Current score for identifying Dementia, MCI to Dementia, MCI, NL to MCI, NL:<br/>
+<br/>
+NN>.....................77%<br/>
+Random forests>.........84%<br/>
+Single decision tree>...82.77%<br/>
